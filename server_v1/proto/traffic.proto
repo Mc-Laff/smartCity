@@ -1,0 +1,18 @@
+// gRPC service for registering traffic control clients
+
+syntax = "proto3";
+
+package traffic;
+
+service TrafficService {
+  rpc RegisterClient (ClientType) returns (Ack);
+}
+
+message ClientType {
+  string role = 1; // this message can be used in your client to provide what client type is connecting
+		   // Role could be 'road_light', 'rail_light', or 'barrier'
+}
+
+message Ack {
+  string message = 1;
+}

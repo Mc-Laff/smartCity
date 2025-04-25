@@ -1,0 +1,41 @@
+const grpc = require('@grpc/grpc-js'); //core gRPC library used to create the server
+const protoLoader = require('@grpc/proto-loader'); //loads our .proto definitions
+const path = require('path');
+
+const PROTO_PATH = path.join(__dirname, './proto/traffic.proto');
+const packageDefinition = protoLoader.loadSync(PROTO_PATH); //used to load and parse the proto
+const trafficProto = grpc.loadPackageDefinition(packageDefinition).traffic; 
+
+
+// this method below runs when the client calls a RegisterClient rpc
+// call.request is a message from the client telling the server which 'role' is connecting, 'road_lights' for example
+// 'road_lights' is passed as a String and logged
+
+function registerClient(call, callback) {
+  const { role } = call.request;
+  console.log(`[Control Panel] ${role.toUpperCase()} client connected.`);
+  callback(null, { message: `Registered ${role} client.` });
+}
+
+
+// first a new gRPC server is created
+// TrafficService is added, and the RegisterClient rpc is then linked to the registerClient() function
+// the address is set to '0.0.0.0:50051' allowing it to accept connections across all available networks
+// ServerCredentials.createInsecure() means communication is passed from our server to our clients  with no encryption, certificates and in plain text
+// once connection is complete the server starts and then logs the connection message
+
+function main() {
+  const server = new grpc.Server();
+  server.addService(trafficProto.TrafficService.service, {
+    RegisterClient: registerClient
+  });
+
+  const address = '0.0.0.0:50051';
+  server.bindAsync(address, grpc.ServerCredentials.createInsecure(), () => {
+    console.log(`[Server] gRPC server listening at ${address}`);
+    server.start();
+  });
+}
+
+// main() will then run the server
+main();
