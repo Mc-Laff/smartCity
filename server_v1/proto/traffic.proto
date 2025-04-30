@@ -6,6 +6,7 @@ package traffic;
 
 service TrafficService {
   rpc RegisterClient (ClientType) returns (Ack);
+  rpc scheduleRailLigths(RailLightsRequest) returns(RailLightsResponse);
 }
 
 message ClientType {
@@ -15,4 +16,13 @@ message ClientType {
 
 message Ack {
   string message = 1;
+}
+
+message RailLightsRequest{
+  string clientType=1;
+  string status=2;
+}
+
+message RailLightsResponse{
+  string sendOut=1;
 }
