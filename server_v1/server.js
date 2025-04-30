@@ -12,7 +12,10 @@ const trafficProto = grpc.loadPackageDefinition(packageDefinition).traffic;
 
 function registerClient(call, callback) {
   const { role } = call.request;
-  console.log(`[Control Panel] \n   ${role.toUpperCase()} client connected.`);
+  // Added time var to register when the clients/devices connect to the server
+  console.log(
+    `[Control Panel] ${new Date().toLocaleTimeString()}\n   ${role.toUpperCase()} client connected.`
+  );
   callback(null, { message: `Registered ${role} client.` });
 }
 
@@ -25,13 +28,16 @@ function registerClient(call, callback) {
 // Cross Rail lights toggled at specific times
 function scheduleRailLigths(call, callback) {
   const { clientType, status } = call.request;
+
   // Build message to return, with name and status of the client/device
   const sendOutMsg = `${clientType} is now ${status}`;
 
   callback(null, {
     sendOut: sendOutMsg,
   });
-  console.log(`⏰ Scheduled Trigger:\n  ${sendOutMsg}`);
+  console.log(
+    `⏰ Scheduled Trigger: ${new Date().toLocaleTimeString()}\n  ${sendOutMsg}`
+  );
 }
 
 function main() {
