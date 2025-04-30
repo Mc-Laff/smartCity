@@ -1,3 +1,5 @@
+const fs = require("fs");
+
 // import required libraries first
 const grpc = require("@grpc/grpc-js");
 const protoLoader = require("@grpc/proto-loader");
@@ -11,9 +13,14 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH);
 const trafficProto = grpc.loadPackageDefinition(packageDefinition).traffic;
 
 // Times when Rail Lights will be trigger for train passing
-const trainTimes = ["44 22 * * *", "45 22 * * *", "46 22 * * *"];
+const trainTimes = ["25 23 * * *", "26 23 * * *", "27 23 * * *"];
 // var for Rail Lights status
 let status = "GREEN";
+
+// Save the messages to txt Tracker File
+function trackFileCross1(message) {
+  fs.appendFileSync("cross1_TrackFile.txt", `${message}\n`);
+}
 
 // Raymond's code for device to connect and be recognise
 function main() {
@@ -32,8 +39,10 @@ function main() {
   client.RegisterClient(clientType, (error, response) => {
     if (error) {
       console.error("[Client]\n Registration failed:", error);
+      trackFileCross1(error);
     } else {
       console.log("[Client]\n  Server response:", response.message);
+      trackFileCross1(response.message);
     }
   });
 
@@ -47,12 +56,12 @@ function scheduleRailLigths(clientType, client) {
     // Toggle the status
     schedule.scheduleJob(time, () => {
       status = status === "GREEN" ? "RED" : "GREEN";
-
-      console.log(
-        `🔔 Scheduled Task  ${
-          index + 1
-        } triggered at ${new Date().toLocaleTimeString()}` // get the time the event is being trigger and executed
-      );
+      const msg = `🔔 Scheduled Task  ${
+        index + 1
+      } triggered at ${new Date().toLocaleTimeString()}`;
+      // get the time the event is being trigger and executed
+      console.log(msg);
+      trackFileCross1(msg);
       // Schedule a task: every day at the times from the var trainTimes
       client.scheduleRailLigths(
         // we pass just the role as the status will be changes in the server side
@@ -64,9 +73,11 @@ function scheduleRailLigths(clientType, client) {
         (err, response) => {
           if (err) {
             console.error("gRPC Error:\n", err.message);
+            trackFileCross1(error.message);
             return;
           }
           console.log("  ", response.sendOut);
+          trackFileCross1(response.sendOut);
         }
       );
     });
