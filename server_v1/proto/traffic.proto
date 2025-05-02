@@ -6,17 +6,22 @@ package traffic;
 
 service TrafficService {
   rpc RegisterClient (ClientType) returns (Ack);
+
   rpc scheduleRailLigths(RailLightsRequest) returns(RailLightsResponse);
+
+  rpc UpdateLightStatus (LightStatusRequest) returns (Ack);
+
 }
 
 message ClientType {
-  string role = 1; // this message can be used in your client to provide what client type is connecting
-		   // Role could be 'road_light', 'rail_light', or 'barrier'
+  string id = 1;     // <-- Add this line to support ID registration
+  string role = 2;   // 'road_light', 'rail_light', 'barrier', etc.
 }
 
 message Ack {
   string message = 1;
 }
+
 
 message RailLightsRequest{
   string clientType=1;
@@ -26,3 +31,9 @@ message RailLightsRequest{
 message RailLightsResponse{
   string sendOut=1;
 }
+
+message LightStatusRequest {
+  string id = 1;
+  string status = 2;
+}
+
