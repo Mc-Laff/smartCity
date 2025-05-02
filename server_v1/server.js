@@ -1,3 +1,4 @@
+
 const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
 const path = require('path');
@@ -8,16 +9,41 @@ const trafficProto = grpc.loadPackageDefinition(packageDefinition).traffic;
 
 const clients = {}; // to store registered clients
 
+
 // Register clients as they connect
 function registerClient(call, callback) {
-  const { role, id } = call.request;
-  console.log(`[Control Panel] ${role.toUpperCase()} client connected with ID: ${id}`);
-  clients[id] = { id, role };
-  callback(null, { message: `Client ${id} registered successfully.` });
+  const { role } = call.request;
+  // Added time var to register when the clients/devices connect to the server
+  console.log(
+    `[Control Panel] ${new Date().toLocaleTimeString()}\n   ${role.toUpperCase()} client connected.`
+  );
+  callback(null, { message: `Registered ${role} client.` });
 }
 
+// first a new gRPC server is created
+// TrafficService is added, and the RegisterClient rpc is then linked to the registerClient() function
+// the address is set to '0.0.0.0:50051' allowing it to accept connections across all available networks
+// ServerCredentials.createInsecure() means communication is passed from our server to our clients  with no encryption, certificates and in plain text
+// once connection is complete the server starts and then logs the connection message
+
+// Cross Rail lights toggled at specific times
+function scheduleRailLigths(call, callback) {
+  const { clientType, status } = call.request;
+
+  // Build message to return, with name and status of the client/device
+  const sendOutMsg = `${clientType} is now ${status}`;
+
+  callback(null, {
+    sendOut: sendOutMsg,
+  });
+  console.log(
+    `⏰ Scheduled Trigger: ${new Date().toLocaleTimeString()}\n  ${sendOutMsg}`
+  );
+}
+
+
 // Method to update light status and broadcast to all connected clients
-// This is part of the server code where you handle broadcasting
+
 function updateLightStatus(call, callback) {
   const { status } = call.request;
   console.log(`[Server] Broadcasting status update to all clients: ${status}`);
@@ -43,10 +69,15 @@ function updateLightStatus(call, callback) {
 
 
 // gRPC server setup
+
 function main() {
   const server = new grpc.Server();
   server.addService(trafficProto.TrafficService.service, {
     RegisterClient: registerClient,
+
+    scheduleRailLigths: scheduleRailLigths,
+  
+
     UpdateLightStatus: updateLightStatus
   });
 
