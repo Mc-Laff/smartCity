@@ -1,21 +1,26 @@
+const dayjs = require("dayjs");
 
-const grpc = require('@grpc/grpc-js');
-const protoLoader = require('@grpc/proto-loader');
-const path = require('path');
+const grpc = require("@grpc/grpc-js");
+const protoLoader = require("@grpc/proto-loader");
+const path = require("path");
 
-const PROTO_PATH = path.join(__dirname, './proto/traffic.proto');
+const PROTO_PATH = path.join(__dirname, "./proto/traffic.proto");
 const packageDefinition = protoLoader.loadSync(PROTO_PATH);
 const trafficProto = grpc.loadPackageDefinition(packageDefinition).traffic;
 
 const clients = {}; // to store registered clients
 
+// function to replace the var so time gets captured on spot
+function getFormattedTime() {
+  return dayjs().format("DD-MM-YYYY HH:mm");
+}
 
 // Register clients as they connect
 function registerClient(call, callback) {
   const { role } = call.request;
   // Added time var to register when the clients/devices connect to the server
   console.log(
-    `[Control Panel] ${new Date().toLocaleTimeString()}\n   ${role.toUpperCase()} client connected.`
+    `[Control Panel] ${getFormattedTime()}\n   ${role.toUpperCase()} client connected.`
   );
   callback(null, { message: `Registered ${role} client.` });
 }
@@ -36,11 +41,8 @@ function scheduleRailLigths(call, callback) {
   callback(null, {
     sendOut: sendOutMsg,
   });
-  console.log(
-    `⏰ Scheduled Trigger: ${new Date().toLocaleTimeString()}\n  ${sendOutMsg}`
-  );
+  console.log(`⏰ Scheduled Trigger: ${getFormattedTime()}\n  ${sendOutMsg}`);
 }
-
 
 // Method to update light status and broadcast to all connected clients
 
@@ -49,24 +51,28 @@ function updateLightStatus(call, callback) {
   console.log(`[Server] Broadcasting status update to all clients: ${status}`);
 
   // loop through all connected clients and send the status update
-  Object.keys(clients).forEach(clientId => {
+  Object.keys(clients).forEach((clientId) => {
     const client = new trafficProto.TrafficService(
-      'localhost:50052',
+      "localhost:50052",
       grpc.credentials.createInsecure()
     );
 
     client.UpdateLightStatus({ id: clientId, status }, (err, response) => {
       if (err) {
-        console.error(`[Server] Error updating status for ${clientId}:`, err.message);
+        console.error(
+          `[Server] Error updating status for ${clientId}:`,
+          err.message
+        );
       } else {
-        console.log(`[Server] Status updated for ${clientId}: ${response.message}`);
+        console.log(
+          `[Server] Status updated for ${clientId}: ${response.message}`
+        );
       }
     });
   });
 
   callback(null, { message: `Light status updated: ${status}` });
 }
-
 
 // gRPC server setup
 
@@ -76,36 +82,41 @@ function main() {
     RegisterClient: registerClient,
 
     scheduleRailLigths: scheduleRailLigths,
-  
 
-    UpdateLightStatus: updateLightStatus
+    UpdateLightStatus: updateLightStatus,
   });
 
-  const address = '127.0.0.1:50051';
+  const address = "127.0.0.1:50051";
 
   // Start gRPC server
-  server.bindAsync(address, grpc.ServerCredentials.createInsecure(), (error, port) => {
-    if (error) {
-      console.error(`[Server] Error binding to address: ${error.message}`);
-      return;
+  server.bindAsync(
+    address,
+    grpc.ServerCredentials.createInsecure(),
+    (error, port) => {
+      if (error) {
+        console.error(`[Server] Error binding to address: ${error.message}`);
+        return;
+      }
+      console.log(
+        `[Server] gRPC server listening at ${address} (Port: ${port})`
+      );
     }
-    console.log(`[Server] gRPC server listening at ${address} (Port: ${port})`);
-  });
+  );
 
   // Start the readline interface after the server is ready
-  const readline = require('readline');
+  const readline = require("readline");
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
-    prompt: '> '
+    prompt: "> ",
   });
 
   rl.prompt(); // display the prompt
 
-  rl.on('line', (input) => {
-    const [id, status] = input.trim().split(' ');
+  rl.on("line", (input) => {
+    const [id, status] = input.trim().split(" ");
     if (!id || !status) {
-      console.log('[Server] Invalid input format. Example: road_light_1 RED');
+      console.log("[Server] Invalid input format. Example: road_light_1 RED");
       rl.prompt();
       return;
     }
@@ -119,7 +130,7 @@ function main() {
 
     // Broadcast status update to all connected clients
     const client = new trafficProto.TrafficService(
-      'localhost:50051',
+      "localhost:50051",
       grpc.credentials.createInsecure()
     );
 
@@ -133,8 +144,8 @@ function main() {
     });
   });
 
-  rl.on('close', () => {
-    console.log('[Server] CLI input closed.');
+  rl.on("close", () => {
+    console.log("[Server] CLI input closed.");
   });
 }
 
