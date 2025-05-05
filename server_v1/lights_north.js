@@ -1,3 +1,4 @@
+//import libs
 const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
 const path = require('path');
@@ -18,14 +19,14 @@ function main() {
       callback(null, { message: 'Already registered.' });
     },
     UpdateLightStatus: (call, callback) => {
-      const { status, id } = call.request;
-      if (id !== 'north_light' && id !== 'south_light') {
+      const { status, role } = call.request;
+      if (role !== 'road_light_north' && role !== 'road_light_south') {
         callback(null, { message: 'Ignored, not my ID.' });
         return;
       }
   
       lightColour = status;
-      console.log(`[${id}] Light switched to: ${lightColour}`);
+      console.log(`[${role}] Light switched to: ${lightColour}`);
       callback(null, { message: `Light status updated to ${status}` });
     }
   });
@@ -33,23 +34,22 @@ function main() {
 
   const clientServerAddress = '0.0.0.0:50052'; // Different port for client
   server.bindAsync(clientServerAddress, grpc.ServerCredentials.createInsecure(), () => {
-    console.log(`[North Light] Client gRPC server listening at ${clientServerAddress}`);
+    console.log(`[Road Light North] Client gRPC server listening at ${clientServerAddress}`);
   });
 
   // Connecting back to server
   const client = new trafficProto.TrafficService('localhost:50051', grpc.credentials.createInsecure());
 
   const clientType = { 
-    id: 'north_light',  // Unique client ID for north light
-    role: 'road_light'  // Role is the same (road_light) but ID is different
+    role: 'road_light_north'  // Role is the same (road_light) but ID is different
   };
 
   client.RegisterClient(clientType, (error, response) => {
     if (error) {
-      console.error('[North Light] Registration failed:', error);
+      console.error('[Road Light North] Registration failed:', error);
     } else {
-      console.log('[North Light] Server response:', response.message);
-      console.log(`[North Light] Current status: ${lightColour}`);
+      console.log('[Road Light North] Server response:', response.message);
+      console.log(`[Road Light North] Current status: ${lightColour}`);
     }
   });
 }
