@@ -62,6 +62,18 @@ app.get("/home", (req, res) => {
   });
 });
 
+// Logs button
+app.get("/logs", (req, res) => {
+  if (!req.session.user) return res.redirect("/login");
+
+  fs.readFile(logFilePath, "utf8", (err, data) => {
+    const logs = err ? "Unable to load logs." : data;
+    console.log(logs);
+
+    res.render("home", { username: req.session.user, logs });
+  });
+});
+
 // Login user
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
