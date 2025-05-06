@@ -1,18 +1,42 @@
+// file reader
+const fs = require("fs");
+
+// For time stamp
 const dayjs = require("dayjs");
 
 const grpc = require("@grpc/grpc-js");
 const protoLoader = require("@grpc/proto-loader");
 const path = require("path");
+// Authentication
+const bcrypt = require("bcrypt");
+const { render } = require("ejs");
 
 const PROTO_PATH = path.join(__dirname, "./proto/traffic.proto");
 const packageDefinition = protoLoader.loadSync(PROTO_PATH);
 const trafficProto = grpc.loadPackageDefinition(packageDefinition).traffic;
 
 const clients = {}; // to store registered clients
+const users = JSON.parse(fs.readFileSync("credentials.json", "utf-8"));
 
 // function to replace the var so time gets captured on spot
 function getFormattedTime() {
   return dayjs().format("DD-MM-YYYY HH:mm");
+}
+
+function logIn(call, callback) {
+  const { username, password } = call.request;
+  const user = users.find((u) => u.username === username);
+
+  if (!user) {
+    return callback(null, { message: "User not found" });
+  }
+
+  const match = bcrypt.compare(password, user.password);
+  if (match) {
+    callback(null, { message: "Login successful" });
+  } else {
+    callback(null, { message: "Incorrect password" });
+  }
 }
 
 // Register clients as they connect
@@ -84,6 +108,8 @@ function main() {
     scheduleRailLigths: scheduleRailLigths,
 
     UpdateLightStatus: updateLightStatus,
+
+    Login: logIn,
   });
 
   const address = "127.0.0.1:50051";

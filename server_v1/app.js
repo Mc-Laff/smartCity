@@ -1,15 +1,29 @@
+// file reader
 const fs = require("fs");
 
 const express = require("express");
 const session = require("express-session");
+const { render } = require("ejs");
+
+// authentication
 const bcrypt = require("bcrypt");
 
 const path = require("path");
 
+const grpc = require("@grpc/grpc-js");
+const protoLoader = require("@grpc/proto-loader");
+const PROTO_PATH = path.join(__dirname, "./proto/traffic.proto");
+
+const packageDefinition = protoLoader.loadSync(PROTO_PATH);
+const trafficProto = grpc.loadPackageDefinition(packageDefinition).traffic;
+
+const Client = new trafficProto.TrafficService(
+  "localhost:50051",
+  grpc.credentials.createInsecure()
+);
+
 const app = express();
 const PORT = 3005;
-
-const users = JSON.parse(fs.readFileSync("./credentials.json", "utf-8"));
 
 // Ensure log file exists
 const logFilePath = path.join(__dirname, "TrackFile.txt");
@@ -75,17 +89,17 @@ app.get("/logs", (req, res) => {
 });
 
 // Login user
-app.post("/login", async (req, res) => {
+app.post("/logIn", (req, res) => {
   const { username, password } = req.body;
-  const user = users.find((u) => u.username === username);
-  if (!user) return res.render("login", { error: "User not found" });
 
-  const match = await bcrypt.compare(password, user.password);
-  if (!match) return res.render("login", { error: "Incorrect password" });
-
-  // Save username to session
-  req.session.user = username;
-  res.redirect("home");
+  Client.Login({ username, password }, (err, response) => {
+    if (err || response.message !== "Login successful") {
+      res.render("login", { error: "Invalid credentials" });
+    } else {
+      req.session.user = username;
+      res.redirect("home");
+    }
+  });
 });
 
 // Logout user
