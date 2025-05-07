@@ -4,10 +4,11 @@ syntax = "proto3";
 
 package traffic;
 
-service TrafficService {
+service TrafficService{
   rpc RegisterClient (ClientType) returns (Ack);
+  rpc ControlBarrier (BarrierControl) returns (Ack); //RPC to control the barrier, allowing the client to tell the server if needs to lower or raise the barrier
+  rpc TriggerSensor (SensorSignal) returns (Ack); //Sensor informs the server
 }
-
 message ClientType {
   string role = 1; // this message can be used in your client to provide what client type is connecting
 		   // Role could be 'road_light', 'rail_light', or 'barrier'
@@ -15,4 +16,19 @@ message ClientType {
 
 message Ack {
   string message = 1;
+}
+
+//Message that the client send to control the barrier
+message BarrierControl{
+  //If it is True= lower the barrier; if it is False= raise the barrier
+  bool lowerBarrier = 1;
+
+  //Train approaching= 'approaching';train passed= 'passed'
+  string status = 2;
+}
+
+//Message that the client send to sensor to activate barrier
+
+message SensorSignal{
+  bool trainDetected = 1; //true = sensor detected train; false =sensor no detected train.
 }
