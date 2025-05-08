@@ -1,28 +1,53 @@
-const grpc = require('@grpc/grpc-js'); //core gRPC library used to create the server
-const protoLoader = require('@grpc/proto-loader'); //loads our .proto definitions
+// Import libraries
+const grpc = require('@grpc/grpc-js');
+const protoLoader = require('@grpc/proto-loader');
 const path = require('path');
 
 const PROTO_PATH = path.join(__dirname, './proto/traffic.proto');
-const packageDefinition = protoLoader.loadSync(PROTO_PATH); //used to load and parse the proto
-const trafficProto = grpc.loadPackageDefinition(packageDefinition).traffic; 
+const packageDefinition = protoLoader.loadSync(PROTO_PATH);
+const trafficProto = grpc.loadPackageDefinition(packageDefinition).traffic;
+
 
 let barrierClientInstance = null; //If connencted, keeps a reference to the train barrier vlient
 
-// this method below runs when the client calls a RegisterClient rpc
-// call.request is a message from the client telling the server which 'role' is connecting, 'road_lights' for example
-// 'road_lights' is passed as a String and logged
+const clients = {}; // to store registered clients
 
+// Register clients as they connect
 function registerClient(call, callback) {
   const { role } = call.request;
+
   console.log(`[Control Panel] ${role.toUpperCase()} client connected.`);
 
 //If the train barrier client connects, we save a reference to it in the terminal
   if (role === 'train_barrier'){
     barrierClientInstance = new trafficProto.TrafficService('localhost:50051', grpc.credentials.createInsecure());
   }
+
+  clients[role] = true;
+  // Added time var to register when the clients/devices connect to the server
+  console.log(
+    `[Control Panel] ${new Date().toLocaleTimeString()}\n   ${role.toUpperCase()} client connected.`
+  );
+
   callback(null, { message: `Registered ${role} client.` });
 }
 
+// Cross Rail lights toggled at specific times
+function scheduleRailLights(call, callback) {
+  const { clientType, status } = call.request;
+
+  // Build message to return, with name and status of the client/device
+  const sendOutMsg = `${clientType} is now ${status}`;
+
+  callback(null, { sendOut: sendOutMsg });
+  console.log(
+    `⏰ Scheduled Trigger: ${new Date().toLocaleTimeString()}\n  ${sendOutMsg}`
+  );
+}
+
+// Method to update light status and broadcast to all connected clients
+function updateLightStatus(call, callback) {
+  const { status } = call.request;
 
 //Functionality to manage barrier control (lower or raise the barrier)
 
@@ -97,10 +122,23 @@ function triggerSensor(call, callback) {
 // ServerCredentials.createInsecure() means communication is passed from our server to our clients  with no encryption, certificates and in plain text
 // once connection is complete the server starts and then logs the connection message
 
+  // Split the status string to extract the individual updates
+  const [northStatus, southStatus] = status.split(' to ');
+
+
+  // Print the updates for both road lights on the server side
+  console.log(`[Server] road_light_north updated to ${northStatus}`);
+  console.log(`[Server] road_light_south updated to ${southStatus}`);
+
+  callback(null, { message: `Light status updated: ${status}` });
+}
+
+// gRPC server setup
 function main() {
   const server = new grpc.Server();
   server.addService(trafficProto.TrafficService.service, {
     RegisterClient: registerClient,
+
     ControlBarrier: controlBarrier, //RPC
     TriggerSensor: triggerSensor, //RPC
   });
@@ -114,8 +152,22 @@ function main() {
 
     console.log(`[Server] gRPC server bound on port: ${port}`);
     server.start();
+
+    scheduleRailLights: scheduleRailLights, // Keeping this function intact
+    UpdateLightStatus: updateLightStatus,  // Keeping this function intact
+  });
+
+  const address = '127.0.0.1:50051';
+
+  // Start gRPC server
+  server.bindAsync(address, grpc.ServerCredentials.createInsecure(), (error, port) => {
+    if (error) {
+      console.error(`[Server] Error binding to address: ${error.message}`);
+      return;
+    }
+    console.log(`[Server] gRPC server listening at ${address} (Port: ${port})`);
+
   });
 }
 
-// main() will then run the server
 main();

@@ -1,0 +1,7 @@
+Registered RAIL LIGHTS: Cross 1: Street G South client.
+🔔 Scheduled Task  1 triggered at 23:25:00
+RAIL LIGHTS: Cross 1: Street G South is now RED
+🔔 Scheduled Task  2 triggered at 23:26:00
+RAIL LIGHTS: Cross 1: Street G South is now GREEN
+🔔 Scheduled Task  3 triggered at 23:27:00
+RAIL LIGHTS: Cross 1: Street G South is now RED

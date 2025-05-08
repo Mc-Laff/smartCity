@@ -1,30 +1,54 @@
-// import required libraries first
 const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
 const path = require('path');
 
-// load and parse the proto file
 const PROTO_PATH = path.join(__dirname, './proto/traffic.proto');
 const packageDefinition = protoLoader.loadSync(PROTO_PATH);
 const trafficProto = grpc.loadPackageDefinition(packageDefinition).traffic;
 
+const client = new trafficProto.TrafficService(
+  'localhost:50051',
+  grpc.credentials.createInsecure()
+);
 
+// Registering client
+client.RegisterClient({ role: 'road_lights' }, (error, response) => {
+  if (error) {
+    console.error('[Client] Registration failed:', error.message);
+  } else {
+    console.log('[Client] Registration successful:', response.message);
+  }
+});
 
-function main() {
-  const client = new trafficProto.TrafficService('localhost:50051', grpc.credentials.createInsecure());
-	// client connects to localhost:50051
-	// uses the insecure credentials to communicate in plain text with no certifications or encryption required
+// Toggle light statuses every 5 seconds
+let currentStatus = { north: 'GREEN', south: 'RED' };
 
-  const clientType = { role: 'road_light' };
-	// defines the client type, we can improve on this later by adding more details other than the simple role if we want
+function toggleLights() {
+  // Update the statuses (toggle them)
+  const newNorthStatus = currentStatus.north === 'GREEN' ? 'RED' : 'GREEN';
+  const newSouthStatus = currentStatus.south === 'GREEN' ? 'RED' : 'GREEN';
 
-  client.RegisterClient(clientType, (error, response) => {
-    if (error) {
-      console.error('[Client] Registration failed:', error);
-    } else {
-      console.log('[Client] Server response:', response.message);
+  // Construct the status update message
+  const statusUpdateMessage = `${currentStatus.north} to ${newNorthStatus}`;
+
+  // Send the update to the server
+  client.UpdateLightStatus(
+    { status: statusUpdateMessage },
+    (error, response) => {
+      if (error) {
+        console.error('[Client] Error:', error.message);
+      } else {
+        // Print the update for each light
+        console.log(`[Client] road_light_north updated to ${newNorthStatus}`);
+        console.log(`[Client] road_light_south updated to ${newSouthStatus}`);
+      }
     }
-  });
+  );
+
+  // Update the current status for the next toggle
+  currentStatus.north = newNorthStatus;
+  currentStatus.south = newSouthStatus;
 }
 
-main();
+// Call the toggleLights function every 6 seconds
+setInterval(toggleLights, 6000);
