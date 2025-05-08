@@ -1,4 +1,5 @@
 const fs = require("fs");
+const dayjs = require("dayjs");
 
 // import required libraries first
 const grpc = require("@grpc/grpc-js");
@@ -13,13 +14,39 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH);
 const trafficProto = grpc.loadPackageDefinition(packageDefinition).traffic;
 
 // Times when Rail Lights will be trigger for train passing
-const trainTimes = ["25 23 * * *", "26 23 * * *", "27 23 * * *"];
+const trainTimes = [
+  // testing times
+  "18 13 * * *",
+  "19 13 * * *",
+  // schedule times
+  "00 08 * * *",
+  "05 08 * * *",
+  "00 10 * * *",
+  "05 10 * * *",
+  "00 12 * * *",
+  "05 12 * * *",
+  "00 14 * * *",
+  "05 14 * * *",
+  "00 16 * * *",
+  "05 16 * * *",
+  "00 18 * * *",
+  "05 18 * * *",
+  "00 20 * * *",
+  "05 20 * * *",
+  "00 22 * * *",
+  "05 22 * * *",
+];
 // var for Rail Lights status
 let status = "GREEN";
 
 // Save the messages to txt Tracker File
 function trackFileCross1(message) {
   fs.appendFileSync("cross1_TrackFile.txt", `${message}\n`);
+}
+
+// function to replace the var so time gets captured on spot
+function getFormattedTime() {
+  return dayjs().format("DD-MM-YYYY HH:mm");
 }
 
 // Raymond's code for device to connect and be recognise
@@ -38,11 +65,17 @@ function main() {
   // defines the client type, we can improve on this later by adding more details other than the simple role if we want
   client.RegisterClient(clientType, (error, response) => {
     if (error) {
-      console.error("[Client]\n Registration failed:", error);
-      trackFileCross1(error);
+      console.error(
+        `[Client] ${getFormattedTime()}\n Registration failed:`,
+        error
+      );
+      trackFileCross1(`${getFormattedTime()} ${error}`);
     } else {
-      console.log("[Client]\n  Server response:", response.message);
-      trackFileCross1(response.message);
+      console.log(
+        `[Client] ${getFormattedTime()}\n  Server response:`,
+        response.message
+      );
+      trackFileCross1(`${getFormattedTime()}\n  ${response.message}`);
     }
   });
 
@@ -53,12 +86,10 @@ function main() {
 function scheduleRailLigths(clientType, client) {
   // Loop through trainTimes to execute the schedule job
   trainTimes.forEach((time, index) => {
-    // Toggle the status
+    // Toggle the light status
     schedule.scheduleJob(time, () => {
       status = status === "GREEN" ? "RED" : "GREEN";
-      const msg = `🔔 Scheduled Task  ${
-        index + 1
-      } triggered at ${new Date().toLocaleTimeString()}`;
+      const msg = `${getFormattedTime()}\n 🔔 Scheduled Task  ${index + 1} `;
       // get the time the event is being trigger and executed
       console.log(msg);
       trackFileCross1(msg);

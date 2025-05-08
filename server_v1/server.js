@@ -1,16 +1,47 @@
-// Import libraries
-const grpc = require('@grpc/grpc-js');
-const protoLoader = require('@grpc/proto-loader');
-const path = require('path');
 
-const PROTO_PATH = path.join(__dirname, './proto/traffic.proto');
+// file reader
+const fs = require("fs");
+
+// For time stamp
+const dayjs = require("dayjs");
+
+// Import libraries
+const grpc = require("@grpc/grpc-js");
+const protoLoader = require("@grpc/proto-loader");
+const path = require("path");
+// Authentication
+const bcrypt = require("bcrypt");
+const { render } = require("ejs");
+
+const PROTO_PATH = path.join(__dirname, "./proto/traffic.proto");
 const packageDefinition = protoLoader.loadSync(PROTO_PATH);
 const trafficProto = grpc.loadPackageDefinition(packageDefinition).traffic;
 
 
 let barrierClientInstance = null; //If connencted, keeps a reference to the train barrier vlient
+const users = JSON.parse(fs.readFileSync("credentials.json", "utf-8"));
 
-const clients = {}; // to store registered clients
+// function to replace the var so time gets captured on spot
+function getFormattedTime() {
+  return dayjs().format("DD-MM-YYYY HH:mm");
+}
+
+function logIn(call, callback) {
+  const { username, password } = call.request;
+  const user = users.find((u) => u.username === username);
+
+  if (!user) {
+    return callback(null, { message: "User not found" });
+  }
+
+  const match = bcrypt.compare(password, user.password);
+  if (match) {
+    callback(null, { message: "Login successful" });
+  } else {
+    callback(null, { message: "Incorrect password" });
+  }
+}
+
 
 // Register clients as they connect
 function registerClient(call, callback) {
@@ -26,7 +57,7 @@ function registerClient(call, callback) {
   clients[role] = true;
   // Added time var to register when the clients/devices connect to the server
   console.log(
-    `[Control Panel] ${new Date().toLocaleTimeString()}\n   ${role.toUpperCase()} client connected.`
+    `[Control Panel] ${getFormattedTime()}\n   ${role.toUpperCase()} client connected.`
   );
 
   callback(null, { message: `Registered ${role} client.` });
@@ -39,15 +70,41 @@ function scheduleRailLights(call, callback) {
   // Build message to return, with name and status of the client/device
   const sendOutMsg = `${clientType} is now ${status}`;
 
-  callback(null, { sendOut: sendOutMsg });
-  console.log(
-    `⏰ Scheduled Trigger: ${new Date().toLocaleTimeString()}\n  ${sendOutMsg}`
-  );
+
+  callback(null, {
+    sendOut: sendOutMsg,
+  });
+  console.log(`⏰ Scheduled Trigger: ${getFormattedTime()}\n  ${sendOutMsg}`);
+
 }
 
 // Method to update light status and broadcast to all connected clients
 function updateLightStatus(call, callback) {
   const { status } = call.request;
+
+  console.log(`[Server] Broadcasting status update to all clients: ${status}`);
+
+  // loop through all connected clients and send the status update
+  Object.keys(clients).forEach((clientId) => {
+    const client = new trafficProto.TrafficService(
+      "localhost:50052",
+      grpc.credentials.createInsecure()
+    );
+
+    client.UpdateLightStatus({ id: clientId, status }, (err, response) => {
+      if (err) {
+        console.error(
+          `[Server] Error updating status for ${clientId}:`,
+          err.message
+        );
+      } else {
+        console.log(
+          `[Server] Status updated for ${clientId}: ${response.message}`
+        );
+      }
+    });
+  });
+
 
 //Functionality to manage barrier control (lower or raise the barrier)
 
@@ -62,6 +119,7 @@ function controlBarrier(call, callback){
     callback(null, { message: `The barrier is up.`});
   }
 }
+
 
 //Functionality to response the signal of the sensor when a trian is detected
 
@@ -138,7 +196,9 @@ function main() {
   const server = new grpc.Server();
   server.addService(trafficProto.TrafficService.service, {
     RegisterClient: registerClient,
-
+    scheduleRailLigths: scheduleRailLigths,
+    UpdateLightStatus: updateLightStatus,
+    Login: logIn,
     ControlBarrier: controlBarrier, //RPC
     TriggerSensor: triggerSensor, //RPC
   });
@@ -157,14 +217,22 @@ function main() {
     UpdateLightStatus: updateLightStatus,  // Keeping this function intact
   });
 
-  const address = '127.0.0.1:50051';
+  const address = "127.0.0.1:50051";
 
   // Start gRPC server
-  server.bindAsync(address, grpc.ServerCredentials.createInsecure(), (error, port) => {
-    if (error) {
-      console.error(`[Server] Error binding to address: ${error.message}`);
-      return;
+  server.bindAsync(
+    address,
+    grpc.ServerCredentials.createInsecure(),
+    (error, port) => {
+      if (error) {
+        console.error(`[Server] Error binding to address: ${error.message}`);
+        return;
+      }
+      console.log(
+        `[Server] gRPC server listening at ${address} (Port: ${port})`
+      );
     }
+
     console.log(`[Server] gRPC server listening at ${address} (Port: ${port})`);
 
   });
