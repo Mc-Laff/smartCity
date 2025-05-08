@@ -14,8 +14,7 @@ service TrafficService {
 }
 
 message ClientType {
-  string id = 1;     // <-- Add this line to support ID registration
-  string role = 2;   // 'road_light', 'rail_light', 'barrier', etc.
+  string role = 1;   // 'road_light', 'rail_light', 'barrier', etc.
 }
 
 message Ack {
@@ -33,7 +32,6 @@ message RailLightsResponse{
 }
 
 message LightStatusRequest {
-  string id = 1;
+  string role = 1;
   string status = 2;
 }
-
