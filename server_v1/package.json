@@ -12,7 +12,12 @@
   "dependencies": {
     "@grpc/grpc-js": "^1.13.3",
     "@grpc/proto-loader": "^0.7.15",
-    "bootstrap": "^5.3.5"
+    "bcrypt": "^5.1.1",
+    "bootstrap": "^5.3.5",
+    "dayjs": "^1.11.13",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "node-schedule": "^2.1.1"
   },
   "description": ""
 }

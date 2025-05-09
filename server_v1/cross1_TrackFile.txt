@@ -5,3 +5,31 @@ RAIL LIGHTS: Cross 1: Street G South is now RED
 RAIL LIGHTS: Cross 1: Street G South is now GREEN
 🔔 Scheduled Task  3 triggered at 23:27:00
 RAIL LIGHTS: Cross 1: Street G South is now RED
+09-05-2025 19:40
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+09-05-2025 19:41
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+09-05-2025 19:42
+ 🔔 Scheduled Task  1 
+09-05-2025 19:47
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+09-05-2025 19:48
+ 🔔 Scheduled Task  1 
+12 UNIMPLEMENTED: The server does not implement the method scheduleRailLigths
+09-05-2025 19:50
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+09-05-2025 19:51
+ 🔔 Scheduled Task  1 
+12 UNIMPLEMENTED: The server does not implement the method scheduleRailLigths
+09-05-2025 19:54
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+09-05-2025 19:55
+ 🔔 Scheduled Task  1 
+09-05-2025 19:57
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+09-05-2025 19:58
+ 🔔 Scheduled Task  1 
+RAIL LIGHTS: Cross 1: Street G South is now RED
+09-05-2025 20:00
+ 🔔 Scheduled Task  15 
+RAIL LIGHTS: Cross 1: Street G South is now GREEN

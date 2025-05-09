@@ -11,13 +11,14 @@ message LoginRequest {
 
 message LoginResponse {
   string message = 1;
+}
 
 service TrafficService{
   rpc Login (LoginRequest) returns (LoginResponse);
   rpc RegisterClient (ClientType) returns (Ack);
   rpc ControlBarrier (BarrierControl) returns (Ack); //RPC to control the barrier, allowing the client to tell the server if needs to lower or raise the barrier
   rpc TriggerSensor (SensorSignal) returns (Ack); //Sensor informs the server
-  rpc scheduleRailLigths(RailLightsRequest) returns(RailLightsResponse);
+  rpc scheduleRailLights(RailLightsRequest) returns(RailLightsResponse);
   rpc UpdateLightStatus (LightStatusRequest) returns (Ack);
 
 }
@@ -42,6 +43,7 @@ message BarrierControl{
 
 message SensorSignal{
   bool trainDetected = 1; //true = sensor detected train; false =sensor no detected train.
+}
 
 
 message RailLightsRequest{

@@ -16,7 +16,7 @@ const trafficProto = grpc.loadPackageDefinition(packageDefinition).traffic;
 // Times when Rail Lights will be trigger for train passing
 const trainTimes = [
   // testing times
-  "18 13 * * *",
+  "58 19 * * *",
   "19 13 * * *",
   // schedule times
   "00 08 * * *",
@@ -80,10 +80,10 @@ function main() {
   });
 
   // ADDED: calling the schedule lights function
-  scheduleRailLigths(clientType, client);
+  scheduleRailLights(clientType, client);
 }
 
-function scheduleRailLigths(clientType, client) {
+function scheduleRailLights(clientType, client) {
   // Loop through trainTimes to execute the schedule job
   trainTimes.forEach((time, index) => {
     // Toggle the light status
@@ -94,7 +94,7 @@ function scheduleRailLigths(clientType, client) {
       console.log(msg);
       trackFileCross1(msg);
       // Schedule a task: every day at the times from the var trainTimes
-      client.scheduleRailLigths(
+      client.scheduleRailLights(
         // we pass just the role as the status will be changes in the server side
         {
           clientType: clientType.role,
@@ -104,7 +104,7 @@ function scheduleRailLigths(clientType, client) {
         (err, response) => {
           if (err) {
             console.error("gRPC Error:\n", err.message);
-            trackFileCross1(error.message);
+            trackFileCross1(err.message);
             return;
           }
           console.log("  ", response.sendOut);

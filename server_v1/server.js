@@ -44,6 +44,8 @@ function logIn(call, callback) {
 
 
 // Register clients as they connect
+const clients = {};
+
 function registerClient(call, callback) {
   const { role } = call.request;
 
@@ -78,33 +80,19 @@ function scheduleRailLights(call, callback) {
 
 }
 
-// Method to update light status and broadcast to all connected clients
+// Method to update road light status
 function updateLightStatus(call, callback) {
   const { status } = call.request;
 
-  console.log(`[Server] Broadcasting status update to all clients: ${status}`);
+  // Split the status string to extract the individual updates
+  const [northStatus, southStatus] = status.split(' to ');
 
-  // loop through all connected clients and send the status update
-  Object.keys(clients).forEach((clientId) => {
-    const client = new trafficProto.TrafficService(
-      "localhost:50052",
-      grpc.credentials.createInsecure()
-    );
+  // Print the updates for both road lights on the server side
+  console.log(`[Server] road_light_north updated to ${northStatus}`);
+  console.log(`[Server] road_light_south updated to ${southStatus}`);
 
-    client.UpdateLightStatus({ id: clientId, status }, (err, response) => {
-      if (err) {
-        console.error(
-          `[Server] Error updating status for ${clientId}:`,
-          err.message
-        );
-      } else {
-        console.log(
-          `[Server] Status updated for ${clientId}: ${response.message}`
-        );
-      }
-    });
-  });
-
+  callback(null, { message: `Light status updated: ${status}` });
+}
 
 //Functionality to manage barrier control (lower or raise the barrier)
 
@@ -180,27 +168,16 @@ function triggerSensor(call, callback) {
 // ServerCredentials.createInsecure() means communication is passed from our server to our clients  with no encryption, certificates and in plain text
 // once connection is complete the server starts and then logs the connection message
 
-  // Split the status string to extract the individual updates
-  const [northStatus, southStatus] = status.split(' to ');
-
-
-  // Print the updates for both road lights on the server side
-  console.log(`[Server] road_light_north updated to ${northStatus}`);
-  console.log(`[Server] road_light_south updated to ${southStatus}`);
-
-  callback(null, { message: `Light status updated: ${status}` });
-}
-
 // gRPC server setup
 function main() {
   const server = new grpc.Server();
   server.addService(trafficProto.TrafficService.service, {
     RegisterClient: registerClient,
-    scheduleRailLigths: scheduleRailLigths,
+    scheduleRailLights: scheduleRailLights,
     UpdateLightStatus: updateLightStatus,
     Login: logIn,
-    ControlBarrier: controlBarrier, //RPC
-    TriggerSensor: triggerSensor, //RPC
+    ControlBarrier: controlBarrier,
+    TriggerSensor: triggerSensor,
   });
 
   const address = '0.0.0.0:50051';
@@ -212,29 +189,6 @@ function main() {
 
     console.log(`[Server] gRPC server bound on port: ${port}`);
     server.start();
-
-    scheduleRailLights: scheduleRailLights, // Keeping this function intact
-    UpdateLightStatus: updateLightStatus,  // Keeping this function intact
-  });
-
-  const address = "127.0.0.1:50051";
-
-  // Start gRPC server
-  server.bindAsync(
-    address,
-    grpc.ServerCredentials.createInsecure(),
-    (error, port) => {
-      if (error) {
-        console.error(`[Server] Error binding to address: ${error.message}`);
-        return;
-      }
-      console.log(
-        `[Server] gRPC server listening at ${address} (Port: ${port})`
-      );
-    }
-
-    console.log(`[Server] gRPC server listening at ${address} (Port: ${port})`);
-
   });
 }
 
