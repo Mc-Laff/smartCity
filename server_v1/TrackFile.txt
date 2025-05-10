@@ -1,0 +1,166 @@
+06-05-2025 10:09
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+06-05-2025 10:10
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+06-05-2025 10:11
+ 🔔 Scheduled Task  1 
+RAIL LIGHTS: Cross 1: Street G South is now RED
+06-05-2025 10:12
+ 🔔 Scheduled Task  2 
+RAIL LIGHTS: Cross 1: Street G South is now GREEN
+06-05-2025 11:21
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+06-05-2025 12:00
+ 🔔 Scheduled Task  7 
+RAIL LIGHTS: Cross 1: Street G South is now RED
+06-05-2025 12:05
+ 🔔 Scheduled Task  8 
+RAIL LIGHTS: Cross 1: Street G South is now GREEN
+06-05-2025 13:51
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+06-05-2025 13:52
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+06-05-2025 13:53
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+06-05-2025 13:57
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+06-05-2025 13:58
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+06-05-2025 13:59
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+06-05-2025 14:00
+ 🔔 Scheduled Task  9 
+RAIL LIGHTS: Cross 1: Street G South is now RED
+06-05-2025 14:05
+ 🔔 Scheduled Task  10 
+RAIL LIGHTS: Cross 1: Street G South is now GREEN
+06-05-2025 15:08
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+06-05-2025 15:08
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+06-05-2025 15:08
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+06-05-2025 15:08
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+06-05-2025 15:09
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+06-05-2025 15:09
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+06-05-2025 15:09
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+06-05-2025 15:24
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+06-05-2025 15:27
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+06-05-2025 15:28
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+06-05-2025 15:29
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+07-05-2025 20:33
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+07-05-2025 22:00
+ 🔔 Scheduled Task  17 
+RAIL LIGHTS: Cross 1: Street G South is now RED
+07-05-2025 22:05
+ 🔔 Scheduled Task  18 
+RAIL LIGHTS: Cross 1: Street G South is now GREEN
+09-05-2025 21:24
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+09-05-2025 21:24
+  Registered RAIL LIGHTS: Cross 1: Street G South client.
+09-05-2025 21:26
+ 🔔 Scheduled Task  1 
+10-05-2025 12:12 Error: 2 UNKNOWN: Server method handler threw error Cannot read properties of undefined (reading 'toUpperCase')
+10-05-2025 12:24 Error: 2 UNKNOWN: Server method handler threw error Cannot read properties of undefined (reading 'toUpperCase')
+10-05-2025 12:25 Error: 2 UNKNOWN: Server method handler threw error Cannot read properties of undefined (reading 'toUpperCase')
+10-05-2025 12:26
+  Registered undefined client.
+10-05-2025 12:29
+  Registered undefined client.
+10-05-2025 12:31
+  Registered undefined client.
+10-05-2025 12:47
+  Registered undefined client.
+10-05-2025 12:48
+  Registered undefined client.
+10-05-2025 12:49
+  Registered undefined client.
+10-05-2025 12:51
+  Registered undefined client.
+10-05-2025 12:57
+  Registered undefined client.
+10-05-2025 12:57
+  Registered undefined client.
+10-05-2025 12:58
+  Registered undefined client.
+10-05-2025 13:01
+  Registered undefined client.
+10-05-2025 13:04
+  Registered undefined client.
+10-05-2025 13:06
+  Registered undefined client.
+10-05-2025 13:07
+  Registered undefined client.
+10-05-2025 13:08
+  Registered undefined client.
+10-05-2025 13:10
+  Registered undefined client.
+10-05-2025 13:14
+  Registered undefined client.
+10-05-2025 13:15
+  Registered undefined client.
+10-05-2025 13:19
+ 🔔 Scheduled Task  2 
+10-05-2025 13:21
+  Registered undefined client.
+10-05-2025 13:25
+  Registered undefined client.
+10-05-2025 13:25
+  Registered undefined client.
+10-05-2025 13:26
+ 🔔 Scheduled Task  2 
+10-05-2025 14:00
+ 🔔 Scheduled Task  9 
+10-05-2025 14:05
+ 🔔 Scheduled Task  10 
+10-05-2025 14:34
+ 🔔 Scheduled Task  1 
+10-05-2025 14:38
+ 🔔 Scheduled Task  1 
+12 UNIMPLEMENTED: The server does not implement the method /traffic.TrafficService/scheduleRailLights
+10-05-2025 14:39
+ 🔔 Scheduled Task  2 
+14 UNAVAILABLE: No connection established. Last error: Error: connect ECONNREFUSED 127.0.0.1:50051
+10-05-2025 14:40
+ 🔔 Scheduled Task  3 
+10-05-2025 14:40
+ 🔔 Scheduled Task  3 
+undefined is now RED
+undefined is now RED
+10-05-2025 15:13
+ 🔔 Scheduled Task  1 
+undefined is now RED
+10-05-2025 15:30
+ 🔔 Scheduled Task  1 
+Rail Lights Cross 1 are now RED
+10-05-2025 15:31
+ 🔔 Scheduled Task  2 
+Rail Lights Cross 1 are now GREEN
+10-05-2025 15:32
+ 🔔 Scheduled Task  3 
+Rail Lights Cross 1 are now RED
+10-05-2025 16:00
+ 🔔 Scheduled Task  12 
+Rail Lights Cross 1 are now GREEN
+10-05-2025 16:05
+ 🔔 Scheduled Task  13 
+Rail Lights Cross 1 are now RED
+10-05-2025 18:00
+ 🔔 Scheduled Task  14 
+Rail Lights Cross 1 are now RED
+10-05-2025 18:05
+ 🔔 Scheduled Task  15 
+Rail Lights Cross 1 are now GREEN
+10-05-2025 18:17
+ 🔔 Scheduled Task  1 
+Rail Lights Cross 1 are now RED

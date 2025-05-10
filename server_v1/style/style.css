@@ -1,0 +1,49 @@
+body {
+  font-family: sans-serif;
+  padding: 20px;
+  background: #f8f8f8;
+}
+
+#loginForm {
+  width: 60% !important;
+  max-width: 460px;
+  margin-left: 50% auto;
+}
+
+#title {
+  text-decoration: none !important;
+  color: black;
+}
+
+.btn-group-vertical button {
+  width: 230px;
+  text-align: left;
+}
+
+#username:focus {
+}
+
+.input-group-text,
+.form-control {
+  border-radius: 0 !important;
+}
+
+.customized-sub-btn {
+  border-radius: 0 !important;
+}
+
+.customized-sub-btn:hover {
+  background-color: rgb(141, 175, 81);
+  scale: 1.03;
+  color: black;
+}
+
+#logs-box {
+  width: 100%;
+  max-height: 46vh;
+  padding: 8px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  font-size: 0.78em;
+  overflow-y: scroll;
+}

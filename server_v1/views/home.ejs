@@ -35,53 +35,75 @@
         </div>
         <div class="container mt-5 mb-4">
             <div class="row">
-                <div class="col-5">
-                    <div class="btn-group-vertical border border-dark ">
-                        <form action="RegisterClient" method="POST">
-                            <button class="m-2 p-2" name="Rail Light Cross 1 South"><svg
-                                    xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                <div class="col-5 d-flex align-content-center justify-content-center">
+                    <div class=" btn-group-vertical  border border-dark d-flex ">
+                        <form action="/start-client" class="d-flex flex-column" method="POST">
+                            <button id="1" type="submit" class="clients-btn  m-2 p-2" name="clientName"
+                                value="rail_lights_cross1_client"><svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                    height="16"
                                     viewBox="0 0 384 512"><!--Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
                                     <path
                                         d="M96 0C78.3 0 64 14.3 64 32l0 96 64 0 0-96c0-17.7-14.3-32-32-32zM288 0c-17.7 0-32 14.3-32 32l0 96 64 0 0-96c0-17.7-14.3-32-32-32zM32 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l0 32c0 77.4 55 142 128 156.8l0 67.2c0 17.7 14.3 32 32 32s32-14.3 32-32l0-67.2C297 398 352 333.4 352 256l0-32c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 160z" />
-                                </svg> Rail Light Cross 1 South</button>
-                        </form>
-                        <button class="m-2 p-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                viewBox="0 0 384 512"><!--Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
-                                <path
-                                    d="M96 0C78.3 0 64 14.3 64 32l0 96 64 0 0-96c0-17.7-14.3-32-32-32zM288 0c-17.7 0-32 14.3-32 32l0 96 64 0 0-96c0-17.7-14.3-32-32-32zM32 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l0 32c0 77.4 55 142 128 156.8l0 67.2c0 17.7 14.3 32 32 32s32-14.3 32-32l0-67.2C297 398 352 333.4 352 256l0-32c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 160z" />
-                            </svg> Rail Light Cross 1 North</button>
-                        <button class="m-2 p-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                viewBox="0 0 384 512"><!--Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
-                                <path
-                                    d="M96 0C78.3 0 64 14.3 64 32l0 96 64 0 0-96c0-17.7-14.3-32-32-32zM288 0c-17.7 0-32 14.3-32 32l0 96 64 0 0-96c0-17.7-14.3-32-32-32zM32 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l0 32c0 77.4 55 142 128 156.8l0 67.2c0 17.7 14.3 32 32 32s32-14.3 32-32l0-67.2C297 398 352 333.4 352 256l0-32c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 160z" />
-                            </svg> Barrier Rail Trail</button>
-                        <button class="m-2 p-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                viewBox="0 0 384 512"><!--Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
-                                <path
-                                    d="M96 0C78.3 0 64 14.3 64 32l0 96 64 0 0-96c0-17.7-14.3-32-32-32zM288 0c-17.7 0-32 14.3-32 32l0 96 64 0 0-96c0-17.7-14.3-32-32-32zM32 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l0 32c0 77.4 55 142 128 156.8l0 67.2c0 17.7 14.3 32 32 32s32-14.3 32-32l0-67.2C297 398 352 333.4 352 256l0-32c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 160z" />
-                            </svg> Street Light Raymond</button>
-                        <button class="m-2 p-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                viewBox="0 0 384 512"><!--Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
-                                <path
-                                    d="M96 0C78.3 0 64 14.3 64 32l0 96 64 0 0-96c0-17.7-14.3-32-32-32zM288 0c-17.7 0-32 14.3-32 32l0 96 64 0 0-96c0-17.7-14.3-32-32-32zM32 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l0 32c0 77.4 55 142 128 156.8l0 67.2c0 17.7 14.3 32 32 32s32-14.3 32-32l0-67.2C297 398 352 333.4 352 256l0-32c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 160z" />
-                            </svg> Street Light Raymond</button>
-                        <form action="/logs">
-                            <button class="m-2 p-2"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                </svg> Rail Light Cross 1</button>
+                            <button type="submit" id="2" class="clients-btn m-2 p-2" name="clientName"
+                                value="road_lights_client"><svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                    height="16"
                                     viewBox="0 0 384 512"><!--Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
                                     <path
                                         d="M96 0C78.3 0 64 14.3 64 32l0 96 64 0 0-96c0-17.7-14.3-32-32-32zM288 0c-17.7 0-32 14.3-32 32l0 96 64 0 0-96c0-17.7-14.3-32-32-32zM32 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l0 32c0 77.4 55 142 128 156.8l0 67.2c0 17.7 14.3 32 32 32s32-14.3 32-32l0-67.2C297 398 352 333.4 352 256l0-32c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 160z" />
-                                </svg> Logs</button>
+                                </svg> Road Lights Street 3 </button>
+                            <button id="3" class="clients-btn m-2 p-2" name="clientName"
+                                value="train_sensor_client"><svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                    height="16"
+                                    viewBox="0 0 384 512"><!--Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                                    <path
+                                        d="M96 0C78.3 0 64 14.3 64 32l0 96 64 0 0-96c0-17.7-14.3-32-32-32zM288 0c-17.7 0-32 14.3-32 32l0 96 64 0 0-96c0-17.7-14.3-32-32-32zM32 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l0 32c0 77.4 55 142 128 156.8l0 67.2c0 17.7 14.3 32 32 32s32-14.3 32-32l0-67.2C297 398 352 333.4 352 256l0-32c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 160z" />
+                                </svg> Train Sensor </button>
+                            <button id="4" class="clients-btn m-2 p-2" name="clientName"
+                                value="train_barrier_client"><svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                    height="16"
+                                    viewBox="0 0 384 512"><!--Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                                    <path
+                                        d="M96 0C78.3 0 64 14.3 64 32l0 96 64 0 0-96c0-17.7-14.3-32-32-32zM288 0c-17.7 0-32 14.3-32 32l0 96 64 0 0-96c0-17.7-14.3-32-32-32zM32 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l0 32c0 77.4 55 142 128 156.8l0 67.2c0 17.7 14.3 32 32 32s32-14.3 32-32l0-67.2C297 398 352 333.4 352 256l0-32c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 160z" />
+                                </svg> Train Barrier </button>
+
                         </form>
                     </div>
                 </div>
                 <div class="col-7 border border-dark p-1">
                     <pre id="logs-box">
-                        <%= logs %>
+                        <%=logs%>
                         </pre>
                 </div>
             </div>
+            <form action="/viewLogs" class="d-flex justify-content-end" method="get" target="_blank">
+                <button class="m-2 p-2">
+                    </svg> Open Logs File</button>
+            </form>
         </div>
     </div>
+    </div>
+
+    <!-- AJAX to get the logs updated to be displayed in the box, calling it every interval of 15 seconds -->
+    <script>
+        function updateLogs() {
+            fetch('/getLogs')
+                .then(res => res.text())
+                .then(data => {
+                    document.getElementById('logs-box').textContent = data;
+                })
+                .catch(err => console.error("Failed to load logs:", err));
+        }
+
+        setInterval(updateLogs, 15000);
+    </script>
+    <script>
+        document.querySelectorAll("button[id]").forEach(btn => {
+            btn.onclick = () => {
+                btn.style.background = "green";
+            };
+        });
+    </script>
 </body>
 
 </html>
