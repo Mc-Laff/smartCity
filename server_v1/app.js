@@ -23,6 +23,8 @@ const Client = new trafficProto.TrafficService(
 );
 
 const app = express();
+app.use(express.urlencoded({ extended: true }));
+
 const PORT = 3005;
 
 // Ensure log file exists
@@ -37,6 +39,32 @@ if (!fs.existsSync(logFilePath)) {
 // Set EJS as the view engine
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+
+// test for btns n clients
+const { spawn } = require("child_process");
+
+app.post("/start-client", (req, res) => {
+  const clientType = req.body.clientName; // From form
+  console.log("Launching client:", clientType);
+
+  // Pass clientName as argument to client.js
+  const clientName = clientType;
+  const clientProcess = spawn("node", [`${clientName}.js`, clientType], {
+    stdio: "inherit",
+  });
+
+  clientProcess.on("error", (err) => {
+    console.error("Error:", err);
+    res.status(500).send("Failed to start client");
+  });
+  // After starting the client, call the gRPC method to register the client
+  Client.registerClient({ role: clientType }, (error, response) => {
+    if (error) {
+      console.error("Error registering client:", error);
+      return res.status(500).send("Failed to register client");
+    }
+  });
+});
 
 // Serve Bootstrap CSS from node_modules
 app.use(
@@ -70,21 +98,37 @@ app.get("/login", (req, res) => {
 // Home/dashboard page - protected access
 app.get("/home", (req, res) => {
   if (!req.session.user) return res.redirect("/login");
-  res.render("home", {
-    username: req.session.user,
-    logs: "",
+  fs.readFile(logFilePath, "utf8", (err, data) => {
+    const logs = err ? "Unable to load logs." : data;
+    res.render("home", {
+      username: req.session.user,
+      logs,
+      message: "",
+      clientType: "",
+    });
   });
 });
 
-// Logs button
-app.get("/logs", (req, res) => {
-  if (!req.session.user) return res.redirect("/login");
+// sent the logs to a new tab in the browser
+app.get("/getLogs", (req, res) => {
+  if (!req.session.user) return res.status(401).send("Unauthorized");
 
   fs.readFile(logFilePath, "utf8", (err, data) => {
     const logs = err ? "Unable to load logs." : data;
-    console.log(logs);
+    res.send(logs); // Send only logs as plain text
+  });
+});
 
-    res.render("home", { username: req.session.user, logs });
+// sent the logs to a new tab in the browser
+app.get("/viewLogs", (req, res) => {
+  if (!req.session.user) return res.redirect("/login");
+
+  Client.GetLogs({}, (err, response) => {
+    if (err || !response.logs) {
+      return res.send("<h2>Failed to load logs.</h2>");
+    }
+    res.setHeader("Content-Type", "text/plain");
+    res.send(`${response.logs}`);
   });
 });
 
@@ -105,10 +149,6 @@ app.post("/logIn", (req, res) => {
 // Logout user
 app.get("/logout", (req, res) => {
   req.session.destroy(() => res.redirect("/login"));
-});
-
-app.get("/RegisterClient", (req, res) => {
-  const { clientType = req.name, status } = req.body;
 });
 
 // Redirect root to login

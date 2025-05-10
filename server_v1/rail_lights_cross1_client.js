@@ -13,11 +13,11 @@ const PROTO_PATH = path.join(__dirname, "./proto/traffic.proto");
 const packageDefinition = protoLoader.loadSync(PROTO_PATH);
 const trafficProto = grpc.loadPackageDefinition(packageDefinition).traffic;
 
+// Use client name from command-line argument
+const clientName = process.argv[2] || "default-client";
+
 // Times when Rail Lights will be trigger for train passing
 const trainTimes = [
-  // testing times
-  "58 19 * * *",
-  "19 13 * * *",
   // schedule times
   "00 08 * * *",
   "05 08 * * *",
@@ -41,7 +41,7 @@ let status = "GREEN";
 
 // Save the messages to txt Tracker File
 function trackFileCross1(message) {
-  fs.appendFileSync("cross1_TrackFile.txt", `${message}\n`);
+  fs.appendFileSync("TrackFile.txt", `${message}\n`);
 }
 
 // function to replace the var so time gets captured on spot
@@ -57,30 +57,13 @@ function main() {
   );
   // client connects to localhost:50051
   // uses the insecure credentials to communicate in plain text with no certifications or encryption required
-  const clientType = { role: "RAIL LIGHTS: Cross 1: Street G South" };
-
-  // Here we could verify the status is in GREEN when connecting so the events toggle into the right option
-  // as day progress
-
-  // defines the client type, we can improve on this later by adding more details other than the simple role if we want
-  client.RegisterClient(clientType, (error, response) => {
-    if (error) {
-      console.error(
-        `[Client] ${getFormattedTime()}\n Registration failed:`,
-        error
-      );
-      trackFileCross1(`${getFormattedTime()} ${error}`);
-    } else {
-      console.log(
-        `[Client] ${getFormattedTime()}\n  Server response:`,
-        response.message
-      );
-      trackFileCross1(`${getFormattedTime()}\n  ${response.message}`);
-    }
-  });
+  const clientType = { name: clientName };
 
   // ADDED: calling the schedule lights function
   scheduleRailLights(clientType, client);
+
+  // allows the client to be used some where else
+  module.exports = client;
 }
 
 function scheduleRailLights(clientType, client) {

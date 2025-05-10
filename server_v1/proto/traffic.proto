@@ -4,6 +4,16 @@ syntax = "proto3";
 
 package traffic;
 
+service TrafficService {
+  rpc Login (LoginRequest) returns (LoginResponse);
+  rpc RegisterClient (ClientType) returns (Ack);
+  rpc GetLogs(LogsRequest) returns (LogsResponse);
+  rpc scheduleRailLights(RailLightsRequest) returns(RailLightsResponse);
+  rpc UpdateLightStatus (LightStatusRequest) returns (Ack);
+  rpc ControlBarrier (BarrierControl) returns (Ack); //RPC to control the barrier, allowing the client to tell the server if needs to lower or raise the barrier
+  rpc TriggerSensor (SensorSignal) returns (Ack); //Sensor informs the server
+  }
+
 message LoginRequest {
   string username = 1;
   string password = 2;
@@ -13,15 +23,6 @@ message LoginResponse {
   string message = 1;
 }
 
-service TrafficService{
-  rpc Login (LoginRequest) returns (LoginResponse);
-  rpc RegisterClient (ClientType) returns (Ack);
-  rpc ControlBarrier (BarrierControl) returns (Ack); //RPC to control the barrier, allowing the client to tell the server if needs to lower or raise the barrier
-  rpc TriggerSensor (SensorSignal) returns (Ack); //Sensor informs the server
-  rpc scheduleRailLights(RailLightsRequest) returns(RailLightsResponse);
-  rpc UpdateLightStatus (LightStatusRequest) returns (Ack);
-
-}
 message ClientType {
   string role = 1;   // 'road_light', 'rail_light', 'barrier', etc.
 }
@@ -45,12 +46,20 @@ message SensorSignal{
   bool trainDetected = 1; //true = sensor detected train; false =sensor no detected train.
 }
 
+message LogsRequest{
+}
+
+message LogsResponse{
+  string logs=1;
+}
+
+//Message that the client send to sensor to activate barrier
+
 
 message RailLightsRequest{
   string clientType=1;
   string status=2;
 }
-
 message RailLightsResponse{
   string sendOut=1;
 }
