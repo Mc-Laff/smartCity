@@ -91,7 +91,14 @@
                 .then(res => res.text())
                 .then(data => {
                     document.getElementById('logs-box').textContent = data;
+
+                    // Scroll the last log entry into view
+                    const lastLog = logsBox.lastElementChild;
+                    if (lastLog) {
+                        lastLog.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                    }
                 })
+
                 .catch(err => console.error("Failed to load logs:", err));
         }
 

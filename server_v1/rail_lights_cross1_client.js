@@ -18,6 +18,7 @@ const clientName = process.argv[2] || "default-client";
 
 // Times when Rail Lights will be trigger for train passing
 const trainTimes = [
+  "18 20 * * *",
   // schedule times
   "00 08 * * *",
   "05 08 * * *",
@@ -38,11 +39,6 @@ const trainTimes = [
 ];
 // var for Rail Lights status
 let status = "GREEN";
-
-// Save the messages to txt Tracker File
-function trackFileCross1(message) {
-  fs.appendFileSync("TrackFile.txt", `${message}\n`);
-}
 
 // function to replace the var so time gets captured on spot
 function getFormattedTime() {
@@ -75,7 +71,6 @@ function scheduleRailLights(clientType, client) {
       const msg = `${getFormattedTime()}\n 🔔 Scheduled Task  ${index + 1} `;
       // get the time the event is being trigger and executed
       console.log(msg);
-      trackFileCross1(msg);
       // Schedule a task: every day at the times from the var trainTimes
       client.scheduleRailLights(
         // we pass just the role as the status will be changes in the server side
@@ -87,11 +82,9 @@ function scheduleRailLights(clientType, client) {
         (err, response) => {
           if (err) {
             console.error("gRPC Error:\n", err.message);
-            trackFileCross1(err.message);
             return;
           }
           console.log("  ", response.sendOut);
-          trackFileCross1(response.sendOut);
         }
       );
     });
